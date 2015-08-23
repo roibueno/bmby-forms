@@ -135,13 +135,13 @@ $dbname = "bmby";
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-    $stmt = $conn->prepare("SELECT bmby_form.intid, fieldType, fieldLabel, fieldname, optionalVals, isMandatory, isHidden FROM bmby_form WHERE intid=$intid"); 
+    $stmt = $conn->prepare("SELECT mbeat_form.intid, fieldType, fieldLabel, fieldname, optionalVals, isMandatory, isHidden FROM mbeat_form WHERE intid=$intid"); 
     $stmt->execute();
 	$allVals = "";
-	$greetingsAddress = $conn->prepare("SELECT greetingsUrl FROM bmby_generalattrs WHERE intid=$intid");
+	$greetingsAddress = $conn->prepare("SELECT greetingsUrl FROM mbeat_generalform WHERE intid=$intid");
 	$greetingsAddress->execute();
 	$gAddCol = $greetingsAddress->fetchColumn();
-	$cssCode = $conn->prepare("SELECT cssInput FROM bmby_generalattrs WHERE intid=$intid");
+	$cssCode = $conn->prepare("SELECT cssInput FROM mbeat_generalform WHERE intid=$intid");
 	$cssCode->execute();
 	$cssToInject = $cssCode->fetchColumn();
 	echo "<style>".$cssToInject."</style>";
