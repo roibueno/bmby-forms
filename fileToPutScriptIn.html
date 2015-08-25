@@ -6,13 +6,13 @@
 function showForm(str)
 {
 if (str.length==0) { 
-    document.getElementById("txtTable").innerHTML="";
+    document.getElementById("currentForm").innerHTML="";
     return;
 } else {
     var xmlhttp=new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            document.getElementById("txtTable").innerHTML=xmlhttp.responseText;
+            document.getElementById("currentForm").innerHTML=xmlhttp.responseText;
         }
     }
     xmlhttp.open("GET","domFromDB.php?intid="+str,true);
@@ -37,9 +37,7 @@ support@yourcompany.com</a>.
 <form action=""> 
 <input type="text" id="txt1" onkeyup="showForm(this.value)">
 </form>
-<p><span id="txtTable"></span></p> 
-
-<BR> <B><I>This is a new sentence without a paragraph break, in bold italics.</I></B>
+<p><span id="currentForm"></span></p> 
 <HR>
 </BODY>
 </HTML>
