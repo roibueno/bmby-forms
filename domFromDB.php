@@ -195,8 +195,8 @@ class Action {
 			$rtl->execute();
 			$formDirection = $rtl->fetchColumn();
 			if($formDirection == 'rtl')
-				$formCSSCode = "body {direction: rtl;}";
-			else $formCSSCode = "body {direction: ltr;}";
+				$formCSSCode = "body {direction: rtl !important;}";
+			else $formCSSCode = "body {direction: ltr !important;}";
 			//LOP
 			$lop = $conn->prepare("SELECT LOP FROM $this->generalTable WHERE intid=$intid");
 			$lop->execute();
@@ -208,18 +208,85 @@ class Action {
 			$bf = $conn->prepare("SELECT buttonFont FROM $this->generalTable WHERE intid=$intid");
 			$bf->execute();
 			$bFont = $bf->fetchColumn();
-			$formCSSCode .= ".button {font-family: ".$bFont.";}";
+			$formCSSCode .= ".button {font-family: ".$bFont." !important;}";
 			//Button Font Color
 			$bfc = $conn->prepare("SELECT buttonFontColor FROM $this->generalTable WHERE intid=$intid");
 			$bfc->execute();
 			$bFontColor = $bfc->fetchColumn();
 			if($bFontColor == 'trans')
-				$formCSSCode .= ".button {color: transparent;}";
+				$formCSSCode .= ".button {color: transparent !important;}";
 			else	
-				$formCSSCode .= ".button {color: ".$bFontColor.";}";
+				$formCSSCode .= ".button {color: red !important;}";
+			//Button BG Color
+			$bbg = $conn->prepare("SELECT buttonColor FROM $this->generalTable WHERE intid=$intid");
+			$bbg->execute();
+			$buttonBgColor = $bbg->fetchColumn();
+			if($buttonBgColor == 'trans')
+				$formCSSCode .= ".button {background: transparent !important;}";
+			else
+				$formCSSCode .= ".button {background: green !important;}";
+			//Form Width
+			$fw = $conn->prepare("SELECT formWidth FROM $this->generalTable WHERE intid=$intid");
+			$fw->execute();
+			$fWidth = $fw->fetchColumn();
+			$formCSSCode .= ".centerred {max-width: ".$fWidth."px !important;}";
+			//Form Width
+			$fbg = $conn->prepare("SELECT formBG FROM $this->generalTable WHERE intid=$intid");
+			$fbg->execute();
+			$fBackground = $fbg->fetchColumn();
+			$formCSSCode .= ".centerred {background: ".$fBackground." !important;}";
+			//Form Border Width
+			$fbw = $conn->prepare("SELECT formBorderWidth FROM $this->generalTable WHERE intid=$intid");
+			$fbw->execute();
+			$fBorderWidth = $fbw->fetchColumn();
+			$formCSSCode .= ".centerred {border-width: ".$fBorderWidth."px !important; border-style: solid;}";
+			//Form Frame Color
+			$ffc = $conn->prepare("SELECT formFrameColor FROM $this->generalTable WHERE intid=$intid");
+			$ffc->execute();
+			$fFrameColor = $ffc->fetchColumn();
+			$formCSSCode .= ".centerred {border-color: ".$fFrameColor." !important;}";
+			//Font Size
+			$fs = $conn->prepare("SELECT fontSize FROM $this->generalTable WHERE intid=$intid");
+			$fs->execute();
+			$fontSize = $fs->fetchColumn();
+			$formCSSCode .= ".centerred {font-size: ".$fontSize."px !important;}";
+			//Font Color
+			$fc = $conn->prepare("SELECT fontColor FROM $this->generalTable WHERE intid=$intid");
+			$fc->execute();
+			$fontColor = $fc->fetchColumn();
+			$formCSSCode .= ".centerred {color: ".$fontSize." !important;}";
+			//Field Width
+			$fieldW = $conn->prepare("SELECT fieldWidth FROM $this->generalTable WHERE intid=$intid");
+			$fieldW->execute();
+			$fieldWidth = $fieldW->fetchColumn();
+			$formCSSCode .= ".input {max-width: ".$fieldWidth."px !important;}";
+			//Field BG
+			$fieldBG = $conn->prepare("SELECT fieldBG FROM $this->generalTable WHERE intid=$intid");
+			$fieldBG->execute();
+			$fieldBackground = $fieldBG->fetchColumn();
+			$formCSSCode .= ".input {background: ".$fieldBackground." !important;}";
+			//Field Border Width
+			$fieldBW = $conn->prepare("SELECT fieldBorderWidth FROM $this->generalTable WHERE intid=$intid");
+			$fieldBW->execute();
+			$fieldBWidth = $fieldBW->fetchColumn();
+			$formCSSCode .= ".input {max-width: ".$fieldBWidth."px !important;}";
+			//Field Frame Color
+			$fieldFC = $conn->prepare("SELECT fieldFrameColor FROM $this->generalTable WHERE intid=$intid");
+			$fieldFC->execute();
+			$fieldFColor = $fieldFC->fetchColumn();
+			$formCSSCode .= ".input {border-color: ".$fieldFColor." !important; border-style: solid;}";
+			//Field Form Size
+			$fieldFS = $conn->prepare("SELECT fieldFormSize FROM $this->generalTable WHERE intid=$intid");
+			$fieldFS->execute();
+			$fieldFSize = $fieldFS->fetchColumn();
+			$formCSSCode .= ".input {max-width: ".$fieldFSize."px !important;}";
+			//Field Form Color
+			$fieldFCol = $conn->prepare("SELECT fieldFormColor FROM $this->generalTable WHERE intid=$intid");
+			$fieldFCol->execute();
+			$fieldFColor = $fieldFCol->fetchColumn();
+			$formCSSCode .= ".input {color: ".$fieldFColor." !important;}";
 			//Apply CSS on Form
 			echo "<style>".$formCSSCode."</style>";
-			print_r($formCSSCode);
 		    // set the resulting array to associative
 		    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); 
 		    echo '<form action="'.$gAddCol.'" method="post" class="STYLE-NAME"><div class="centerred elegant-aero"><h1>טופס לדוגמא<span>אנא הזן את פרטיך:</span></h1>';
