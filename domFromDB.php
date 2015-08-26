@@ -13,7 +13,7 @@ class Action {
 	public $fieldsTable = "mbeat_form_fields";
 	
 	/*Structure Functions*/
-	function __construct( ){  }	
+	function __construct( ){}	
 	function before() {
 		return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 	}
@@ -31,7 +31,7 @@ class Action {
 	
 	/*API Functions*/
 	/*-------------*/
-	/*Form Manipulations*/    
+	/*Form Manipulations*/ 	   
     function addNewForm($conn, $intid) {
 	    try {
 			    // set the PDO error mode to exception
@@ -43,6 +43,25 @@ class Action {
 			    echo $sql . "<br>" . $e->getMessage();
 			}
 	}
+	function retrieveFormData($conn, $intid) {
+		try {
+			$ft = $this->fieldsTable;
+			$gt = $this->generalTable;
+			$stmt = $conn->prepare("SELECT $ft.intid, $ft.fieldType, $ft.fieldLabel, $ft.fieldname, $ft.optionalVals, $ft.isMandatory,
+					$ft.isHidden, $ft.validOptions, $ft.dateUpdate, $ft.userUpdate, $gt.greetingsUrl
+					FROM $ft
+					JOIN $gt
+					ON $ft.intid = $gt.intid
+					WHERE $ft.intid=$intid");
+			$stmt->execute();
+			foreach(new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v) {
+				print_r($v);
+			}
+		}
+		catch(PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
+	}
 	function showAllForms($conn) {
 		$stmt = $conn->prepare("SELECT intid from $this->generalTable");
 		$stmt->execute();
@@ -50,25 +69,7 @@ class Action {
 			$this->retrieveFormData($conn, $v["intid"]);
 		}
 	}
-	function retrieveFormData($conn, $intid) {
-	try {	
-			$ft = $this->fieldsTable;
-			$gt = $this->generalTable;
-		    $stmt = $conn->prepare("SELECT $ft.intid, $ft.fieldType, $ft.fieldLabel, $ft.fieldname, $ft.optionalVals, $ft.isMandatory, 
-		    	$ft.isHidden, $ft.validOptions, $ft.dateUpdate, $ft.userUpdate, $gt.greetingsUrl 
-		    	FROM $ft
-		    	JOIN $gt
-		    	ON $ft.intid = $gt.intid 
-		    	WHERE $ft.intid=$intid");
-		    $stmt->execute();
-			foreach(new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v) {
-		   		print_r($v);
-		   	} 
-		}
-		catch(PDOException $e) {
-		    echo "Error: " . $e->getMessage();
-		}
-	}
+
 	
 	/*Update&Save Screens*/
     function updateFormScreen1($conn, $intid, $landingPageName, $landingPageUrl, $media, $handleReLid) { 
