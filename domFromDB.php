@@ -5,7 +5,7 @@
 class Action { 
 
 	/* Credentials */
-	public $servername = "tigris:3306";
+	public $servername = "tigris";
 	public $username = "bmbyforms";
 	public $password = "bmbyforms";
 	public $dbname = "bmbyforms";
