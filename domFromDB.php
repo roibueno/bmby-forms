@@ -2,7 +2,7 @@
 <?php $intid=isset($_GET["intid"])?$_GET["intid"]:"" ?>
 <?php
 
-class Action { 
+class Forms { 
 
 	/* Credentials */
 	public $servername = "localhost";
@@ -11,6 +11,7 @@ class Action {
 	public $dbname = "bmby";
 	public $generalTable = "mbeat_form";
 	public $fieldsTable = "mbeat_form_fields";
+	public $refsTable = "mbeat_refs_fields";
 	
 	/*Structure Functions*/
 	function __construct( ){}	
@@ -22,7 +23,7 @@ class Action {
 	}
 
 	/*External DB Functions*/
-	function getUsersForDropdown() {
+	function getUsersData() {
 		/*SHADI COMPLETES*/
 	}
 	function getContentForFieldsDropdown() {
@@ -32,10 +33,10 @@ class Action {
 	/*API Functions*/
 	/*-------------*/
 	/*Form Manipulations*/ 	   
-    function addNewForm($conn, $intid) {
+    function addNewForm($conn) {
 	    try {
 			    // set the PDO error mode to exception
-			    $sql = "INSERT INTO $this->generalTable (intid) VALUES (:intid)";
+			    $sql = "INSERT INTO $this->generalTable () VALUES ()";
 							    // use exec() because no results are returned
 				 $conn->exec($sql);
 			}
@@ -69,7 +70,24 @@ class Action {
 			$this->retrieveFormData($conn, $v["intid"]);
 		}
 	}
-
+	function addNewRefLink($conn, $intid, $refsMedia, $refsAddOns, $refsLinks) {
+		try {
+			// set the PDO error mode to exception
+			$sql = "INSERT INTO $this->refsTable (intid, refsMedia, refsAddOns, refsLinks) VALUES ('$intid', '$refsMedia', '$refsAddOns', '$refsLinks')";
+			// use exec() because no results are returned
+			$conn->exec($sql);
+		}
+		catch(PDOException $e) {
+			echo $sql . "<br>" . $e->getMessage();
+		}
+	}	
+	function showAlllinks($conn, $intid) {
+		$stmt = $conn->prepare("SELECT * from $this->refsTable WHERE intid=$	intid");
+		$stmt->execute();
+		foreach (new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v){
+			print_r($v);
+		}
+	}
 	
 	/*Update&Save Screens*/
     function updateFormScreen1($conn, $intid, $landingPageName, $landingPageUrl, $media, $handleReLid) { 
@@ -114,10 +132,10 @@ class Action {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     }    
-    function updateFormScreen4($conn, $campaignName, $adsGroup, $creativeName, $refsMedia, $refsAddOns, $refsLinks) {
+    function updateFormScreen4($conn, $campaignName, $adsGroup, $creativeName) {
         try {
 		    // set the PDO error mode to exception
-		    $sql = "UPDATE $this->generalTable SET campaignName=:campaignName, adsGroup=:adsGroup, creativeName:=creativeName, refsMedia=:refsMedia, refsAddOns=:refsAddOns, refsLinks=:refsLinks WHERE intid=:intid";
+		    $sql = "UPDATE $this->generalTable SET campaignName=:campaignName, adsGroup=:adsGroup, creativeName:=creativeName WHERE intid=:intid";
 		    // Prepare statement
 		    $stmt = $conn->prepare($sql);
 		    // execute the query
@@ -290,7 +308,7 @@ class Action {
 			echo "<style>".$formCSSCode."</style>";
 		    // set the resulting array to associative
 		    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); 
-		    echo '<form action="'.$gAddCol.'" method="post" class="STYLE-NAME"><div class="centerred elegant-aero"><h1>טופס לדוגמא<span>אנא הזן את פרטיך:</span></h1>';
+		    echo '<form Forms="'.$gAddCol.'" method="post" class="STYLE-NAME"><div class="centerred elegant-aero"><h1>טופס לדוגמא<span>אנא הזן את פרטיך:</span></h1>';
 		    foreach(new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v) {
 		    		$optValsStr = $v["optionalVals"];
 		    		$optArray = explode('|', $optValsStr);
@@ -361,7 +379,7 @@ class Action {
 	}
 	// Notice: when you run insertJSCodeToDB($conn, $intid, $formHTMLCode) where
 	// $formJSCode = generateFormJSScript($conn, $intid), you get the required result
-	function insertJSCodeToDB($conn, $intid, $formHTMLCode) {
+	function insertJSCodeToDB($conn, $intid, $formJSCode) {
 		try {
 			// set the PDO error mode to exception
 			$sql = "UPDATE $this->generalTable SET formJSCode=:formJSCode WHERE intid=:intid";
@@ -389,10 +407,12 @@ class Action {
 
 
 /*MAIN*/
-$mainAction = new Action();
-$conn = $mainAction->before();
+$mainForms = new Forms();
+$conn = $mainForms->before();
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$mainAction->generateFormHTMLScript($conn, $intid);
-$conn = $mainAction->after();
+$mainForms->generateFormHTMLScript($conn, $intid);
+//$mainForms->addNewForm($conn);
+$mainForms->showAlllinks($conn, $intid);
+$conn = $mainForms->after();
 
 ?>
