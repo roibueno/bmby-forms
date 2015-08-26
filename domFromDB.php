@@ -100,7 +100,7 @@ class Action {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     }   
-    function updateFormScreen3($RTL, $LOP, $buttonFont, $buttonFontColor, $buttonColor, $buttonImgId, $formWidth, $formBG, $formBorderWidth, $formFrameColor, $fontSize, $fontColor, $fieldWidth, $fieldBG, $fieldBorderWidth, $fieldFrameColor, $fieldFormSize, $fieldFormColor, $cssInput) {
+    function updateFormScreen3($conn, $RTL, $LOP, $buttonFont, $buttonFontColor, $buttonColor, $buttonImgId, $formWidth, $formBG, $formBorderWidth, $formFrameColor, $fontSize, $fontColor, $fieldWidth, $fieldBG, $fieldBorderWidth, $fieldFrameColor, $fieldFormSize, $fieldFormColor, $cssInput) {
         try {
 		    // set the PDO error mode to exception
 		    $sql = "UPDATE $this->generalTable SET RTL=:RTL, LOP=:LOP, buttonFont:=buttonFont, buttonFontColor=:buttonFontColor, buttonColor=:buttonColor, buttonImgId=:buttonImgId, formWidth=:formWidth, formBG=:formBG, formBorderWidth=:formBorderWidth, formFrameColor=:formFrameColor, fontSize=:fontSize, fontColor=:fontColor, fieldWidth=:fieldWidth, fieldBG=:fieldBG, fieldBorderWidth=:fieldBorderWidth, fieldFrameColor=:fieldFrameColor, fieldFormSize=:fieldFormSize, fieldFormColor=:fieldFormColor, cssInput=:cssInput WHERE intid=:intid";
@@ -114,7 +114,7 @@ class Action {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     }    
-    function updateFormScreen4($campaignName, $adsGroup, $creativeName, $refsMedia, $refsAddOns, $refsLinks) {
+    function updateFormScreen4($conn, $campaignName, $adsGroup, $creativeName, $refsMedia, $refsAddOns, $refsLinks) {
         try {
 		    // set the PDO error mode to exception
 		    $sql = "UPDATE $this->generalTable SET campaignName=:campaignName, adsGroup=:adsGroup, creativeName:=creativeName, refsMedia=:refsMedia, refsAddOns=:refsAddOns, refsLinks=:refsLinks WHERE intid=:intid";
