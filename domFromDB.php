@@ -343,7 +343,38 @@ class Action {
 		echo '<br><br><label><span>&nbsp;</span>'.$dText.'</label>';
 		echo '</div></form>';
 		}	
-	
+	// Notice: when you run insertHTMLCodeToDB($conn, $intid, $formHTMLCode) where 
+	// $formHTMLCode = generateFormHTMLScript($conn, $intid), you get the required result
+	function insertHTMLCodeToDB($conn, $intid, $formHTMLCode) {
+		try {
+			// set the PDO error mode to exception
+			$sql = "UPDATE $this->generalTable SET formHTMLCode=:formHTMLCode WHERE intid=:intid";
+			// Prepare statement
+			$stmt = $conn->prepare($sql);
+			// execute the query
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo $sql . "<br>" . $e->getMessage();
+		}
+	}
+	// Notice: when you run insertJSCodeToDB($conn, $intid, $formHTMLCode) where
+	// $formJSCode = generateFormJSScript($conn, $intid), you get the required result
+	function insertJSCodeToDB($conn, $intid, $formHTMLCode) {
+		try {
+			// set the PDO error mode to exception
+			$sql = "UPDATE $this->generalTable SET formJSCode=:formJSCode WHERE intid=:intid";
+			// Prepare statement
+			$stmt = $conn->prepare($sql);
+			// execute the query
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo $sql . "<br>" . $e->getMessage();
+		}
+	}	
 	/*Validation Functions*/
 	function fieldChecker($mandatory, $hidden) {
 			$finalClasses = "";
