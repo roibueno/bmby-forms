@@ -52,8 +52,11 @@ class Action {
       }
     }
   }
-
-      
+  
+    function before() {
+        return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+ 
+    }
 
 	private function after() {
 		return $this->conn = null;
