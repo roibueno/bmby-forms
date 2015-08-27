@@ -24,45 +24,45 @@ class Forms {
 	public $dbname = "bmby";
 	
 	
-	/*Structure Functions*/
+		/*Structure Functions*/
 	function __construct($arrPost = null ){ 
         $this->arrPost = $arrPost;
         //$this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         //$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }	
     
-  	public function Run($action, $args = null){
-	    if(method_exists($this, $action)){
-	      $data = $this->$action($args);
-	      switch($action){
-	      	case 'before':
-	      	case 'after':
-	      	case 'test':
-	        case 'addNewForm':
-	        case 'showAllForms':
-	        case 'retrieveFormData':
-	        case 'updateFormScreen1':
-	        case 'updateFormScreen2':
-	        case 'updateFormScreen3':
-	        case 'updateFormScreen4':
-	        case 'updateFieldsValues':
-	        case 'generateFormJSScript':
-	        case 'generateFormHTMLScript':
-	        case 'fieldChecker':
-	        /*case 'GetUserCompanyProjects':
-	        case 'GetCompanyUsers':
-	        case 'GetTask':
-	        case 'insert':
-	        case 'update':
-	        case 'delete':
-	        case 'UploadFile':
-	        case 'GetFilterCount':
-	        case 'SendOnlyToProjectUsers': 
-	        case 'AllowSendSms':*/
-	          return $data;
-	          break;
-	      }
-	    }
+  public function Run($action, $args = null){
+    if(method_exists($this, $action)){
+      $data = $this->$action($args);
+      switch($action){
+        case 'test':
+        case 'before':
+	    case 'after':
+        case 'addNewForm':
+        case 'showAllForms':
+        case 'retrieveFormData':
+        case 'updateFormScreen1':
+        case 'updateFormScreen2':
+        case 'updateFormScreen3':
+        case 'updateFormScreen4':
+        case 'updateFieldsValues':
+        case 'generateFormJSScript':
+        case 'generateFormHTMLScript':
+        case 'fieldChecker':
+        /*case 'GetUserCompanyProjects':
+        case 'GetCompanyUsers':
+        case 'GetTask':
+        case 'insert':
+        case 'update':
+        case 'delete':
+        case 'UploadFile':
+        case 'GetFilterCount':
+        case 'SendOnlyToProjectUsers': 
+        case 'AllowSendSms':*/
+          return $data;
+          break;
+      }
+    }
   }
   
     private function before() {
@@ -504,7 +504,7 @@ class Forms {
             echo $sql . "<br>" . $e->getMessage();
         }
     }
-	/*Validation Functions*/
+
     private function resetStyleButton() {
         $RTL = $this->arrPost["RTL"];
         $LOP = $this->arrPost["LOP"];
@@ -537,6 +537,8 @@ class Forms {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     } 
+
+	/*Validation Functions*/
 	private function fieldChecker($mandatory, $hidden) {
 			$finalClasses = "";
 			if ($mandatory == 1)
