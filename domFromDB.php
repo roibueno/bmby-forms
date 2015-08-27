@@ -1,30 +1,19 @@
-<link rel="stylesheet" href="css/style.css" type="text/css">
-<?php $intid=isset($_GET["intid"])?$_GET["intid"]:"" ?>
 <?php
+namespace Mbeat\Interfaces;
 
-class Forms { 
+class Action { 
 
 	/* Credentials */
-	public $generalTable = "mbeat_form";
-	public $fieldsTable = "mbeat_form_fields";
-	public $refsTable = "mbeat_refs_fields";
-	private $arrPost;
-	private $conn;
-	
-	/* 
 	public $servername = "tigris";
 	public $username = "bmbyforms";
 	public $password = "bmbyforms";
-	public $dbname = "bmbyforms"; 
-	*/
+	public $dbname = "bmbyforms";
+	public $generalTable = "mbeat_form";
+	public $fieldsTable = "mbeat_form_fields";
+    private $arrPost;
+    private $conn;
 	
-	public $servername = "localhost";
-	public $username = "root";
-	public $password = "";
-	public $dbname = "bmby";
-	
-	
-		/*Structure Functions*/
+	/*Structure Functions*/
 	function __construct($arrPost = null ){ 
         $this->arrPost = $arrPost;
         //$this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -49,12 +38,12 @@ class Forms {
         case 'generateFormJSScript':
         case 'generateFormHTMLScript':
         case 'fieldChecker':
-        /*case 'GetUserCompanyProjects':
-        case 'GetCompanyUsers':
-        case 'GetTask':
-        case 'insert':
-        case 'update':
-        case 'delete':
+        case 'insertHTMLCodeToDB':
+        case 'insertJSCodeToDB':
+        case 'resetStyleButton':
+        case 'addNewRefLink':
+        case 'showAlllinks':
+        /*case 'delete':
         case 'UploadFile':
         case 'GetFilterCount':
         case 'SendOnlyToProjectUsers': 
@@ -66,7 +55,7 @@ class Forms {
   }
   
     private function before() {
-        return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+        $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
  
     }
 
@@ -131,19 +120,24 @@ class Forms {
 		}
 	}
 
-    function addNewRefLink($conn, $intid, $refsMedia, $refsAddOns, $refsLinks) {
+    function addNewRefLink() {
+        $intid = $this->arrPost["intid"];
+        $refsMedia = $this->arrPost["refsMedia"];
+        $refsAddOns = $this->arrPost["refsAddOns"];
+        $refsLinks = $this->arrPost["refsLinks"];
         try {
             // set the PDO error mode to exception
             $sql = "INSERT INTO $this->refsTable (intid, refsMedia, refsAddOns, refsLinks) VALUES ('$intid', '$refsMedia', '$refsAddOns', '$refsLinks')";
             // use exec() because no results are returned
-            $conn->exec($sql);
+            $this->conn->exec($sql);
         }
         catch(PDOException $e) {
             echo $sql . "<br>" . $e->getMessage();
         }
     }   
-    function showAlllinks($conn, $intid) {
-        $stmt = $conn->prepare("SELECT * from $this->refsTable WHERE intid=$ intid");
+    function showAlllinks() {
+        $intid = $this->arrPost["intid"];
+        $stmt = $this->conn->prepare("SELECT * from $this->refsTable WHERE intid=$ intid");
         $stmt->execute();
         foreach (new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v){
             print_r($v);
@@ -474,12 +468,14 @@ class Forms {
 	
     // Notice: when you run insertHTMLCodeToDB($conn, $intid, $formHTMLCode) where 
     // $formHTMLCode = generateFormHTMLScript($conn, $intid), you get the required result
-    function insertHTMLCodeToDB($conn, $intid, $formHTMLCode) {
+    function insertHTMLCodeToDB() {
+        $intid = $this->arrPost["intid"];
+        $formHTMLCode = $this->arrPost["formHTMLCode"];
         try {
             // set the PDO error mode to exception
             $sql = "UPDATE $this->generalTable SET formHTMLCode=:formHTMLCode WHERE intid=:intid";
             // Prepare statement
-            $stmt = $conn->prepare($sql);
+            $stmt = $this->conn->prepare($sql);
             // execute the query
             $stmt->execute();
         }
@@ -490,12 +486,14 @@ class Forms {
     }
     // Notice: when you run insertJSCodeToDB($conn, $intid, $formHTMLCode) where
     // $formJSCode = generateFormJSScript($conn, $intid), you get the required result
-    function insertJSCodeToDB($conn, $intid, $formJSCode) {
+    function insertJSCodeToDB() {
+        $intid = $this->arrPost["intid"];
+        $formJSCode = $this->arrPost["formJSCode"];
         try {
             // set the PDO error mode to exception
             $sql = "UPDATE $this->generalTable SET formJSCode=:formJSCode WHERE intid=:intid";
             // Prepare statement
-            $stmt = $conn->prepare($sql);
+            $stmt = $this->conn->prepare($sql);
             // execute the query
             $stmt->execute();
         }
@@ -539,7 +537,10 @@ class Forms {
     } 
 
 	/*Validation Functions*/
-	private function fieldChecker($mandatory, $hidden) {
+	private function fieldChecker() {
+        $intid = $this->arrPost["intid"];
+        $mandatory = $this->arrPost["mandatory"];
+        $hidden = $this->arrPost["hidden"];
 			$finalClasses = "";
 			if ($mandatory == 1)
 				$finalClasses = "mandatory ";
@@ -552,10 +553,10 @@ class Forms {
 
 
 /*MAIN*/
-$mainForms = new Forms();
-$conn = $mainForms->Run('before');
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$mainForms->Run('generateFormHTMLScript');
-$mainForms->Run('after');
+//$mainAction = new Action();
+//$this->conn = $mainAction->before();
+//$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+////$mainAction->generateFormHTMLScript($this->conn, $intid);
+//$this->conn = $mainAction->after();
 
 ?>
