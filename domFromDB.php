@@ -323,14 +323,14 @@ class Forms {
 			$rtl = $this->conn->prepare("SELECT RTL FROM $this->generalTable WHERE intid=$intid");
 			$rtl->execute();
 			$formDirection = $rtl->fetchColumn();
-			if($formDirection == 'rtl')
+			if($formDirection == 'rtl' || $formDirection == 'RTL')
 				$formCSSCode = "body {direction: rtl !important;}";
 			else $formCSSCode = "body {direction: ltr !important;}";
 			//LOP
 			$lop = $this->conn->prepare("SELECT LOP FROM $this->generalTable WHERE intid=$intid");
 			$lop->execute();
 			$orientation = $lop->fetchColumn();
-			if($orientation == 'land')
+			if($orientation == 'landscape' || $orientation == 'LANDSCAPE')
 				$formCSSCode .= "";//complete
 			else $formCSSCode .= "";//complete
 			//Button Font
@@ -342,7 +342,7 @@ class Forms {
 			$bfc = $this->conn->prepare("SELECT buttonFontColor FROM $this->generalTable WHERE intid=$intid");
 			$bfc->execute();
 			$bFontColor = $bfc->fetchColumn();
-			if($bFontColor == 'trans')
+			if($bFontColor == 'transparent' || $bFontColor == 'TRANSPARENT')
 				$formCSSCode .= ".button {color: transparent !important;}";
 			else	
 				$formCSSCode .= ".button {color: red !important;}";
@@ -350,7 +350,7 @@ class Forms {
 			$bbg = $this->conn->prepare("SELECT buttonColor FROM $this->generalTable WHERE intid=$intid");
 			$bbg->execute();
 			$buttonBgColor = $bbg->fetchColumn();
-			if($buttonBgColor == 'trans')
+			if($buttonBgColor == 'transparent' || $buttonBgColor == 'TRANSPARENT')
 				$formCSSCode .= ".button {background: transparent !important;}";
 			else
 				$formCSSCode .= ".button {background: green !important;}";
@@ -504,7 +504,7 @@ class Forms {
             echo $sql . "<br>" . $e->getMessage();
         }
     }
-
+	//Reset Button - Server-Side functionality
     private function resetStyleButton() {
         $RTL = $this->arrPost["RTL"];
         $LOP = $this->arrPost["LOP"];
@@ -555,7 +555,7 @@ class Forms {
 $mainForms = new Forms();
 $conn = $mainForms->Run('before');
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$mainForms->Run('generateFormHTMLScript');
+$mainForms->generateFormHTMLScript();
 $mainForms->Run('after');
 
 ?>
