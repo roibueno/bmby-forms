@@ -2,17 +2,27 @@
 <?php $intid=isset($_GET["intid"])?$_GET["intid"]:"" ?>
 <?php
 
-class Action { 
+class Forms { 
 
 	/* Credentials */
+	public $generalTable = "mbeat_form";
+	public $fieldsTable = "mbeat_form_fields";
+	public $refsTable = "mbeat_refs_fields";
+	private $arrPost;
+	private $conn;
+	
+	/* 
 	public $servername = "tigris";
 	public $username = "bmbyforms";
 	public $password = "bmbyforms";
-	public $dbname = "bmbyforms";
-	public $generalTable = "mbeat_form";
-	public $fieldsTable = "mbeat_form_fields";
-    private $arrPost;
-    private $conn;
+	public $dbname = "bmbyforms"; 
+	*/
+	
+	public $servername = "localhost";
+	public $username = "root";
+	public $password = "";
+	public $dbname = "bmby";
+	
 	
 	/*Structure Functions*/
 	function __construct($arrPost = null ){ 
@@ -21,39 +31,41 @@ class Action {
         //$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }	
     
-  public function Run($action, $args = null){
-    if(method_exists($this, $action)){
-      $data = $this->$action($args);
-      switch($action){
-        case 'test':
-        case 'addNewForm':
-        case 'showAllForms':
-        case 'retrieveFormData':
-        case 'updateFormScreen1':
-        case 'updateFormScreen2':
-        case 'updateFormScreen3':
-        case 'updateFormScreen4':
-        case 'updateFieldsValues':
-        case 'generateFormJSScript':
-        case 'generateFormHTMLScript':
-        case 'fieldChecker':
-        /*case 'GetUserCompanyProjects':
-        case 'GetCompanyUsers':
-        case 'GetTask':
-        case 'insert':
-        case 'update':
-        case 'delete':
-        case 'UploadFile':
-        case 'GetFilterCount':
-        case 'SendOnlyToProjectUsers': 
-        case 'AllowSendSms':*/
-          return $data;
-          break;
-      }
-    }
+  	public function Run($action, $args = null){
+	    if(method_exists($this, $action)){
+	      $data = $this->$action($args);
+	      switch($action){
+	      	case 'before':
+	      	case 'after':
+	      	case 'test':
+	        case 'addNewForm':
+	        case 'showAllForms':
+	        case 'retrieveFormData':
+	        case 'updateFormScreen1':
+	        case 'updateFormScreen2':
+	        case 'updateFormScreen3':
+	        case 'updateFormScreen4':
+	        case 'updateFieldsValues':
+	        case 'generateFormJSScript':
+	        case 'generateFormHTMLScript':
+	        case 'fieldChecker':
+	        /*case 'GetUserCompanyProjects':
+	        case 'GetCompanyUsers':
+	        case 'GetTask':
+	        case 'insert':
+	        case 'update':
+	        case 'delete':
+	        case 'UploadFile':
+	        case 'GetFilterCount':
+	        case 'SendOnlyToProjectUsers': 
+	        case 'AllowSendSms':*/
+	          return $data;
+	          break;
+	      }
+	    }
   }
   
-    function before() {
+    private function before() {
         return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
  
     }
@@ -493,6 +505,38 @@ class Action {
         }
     }
 	/*Validation Functions*/
+    private function resetStyleButton() {
+        $RTL = $this->arrPost["RTL"];
+        $LOP = $this->arrPost["LOP"];
+        $buttonFont = $this->arrPost["buttonFont"];
+        $buttonFontColor = $this->arrPost["buttonFontColor"];
+        $buttonColor = $this->arrPost["buttonColor"];
+        $formWidth = $this->arrPost["formWidth"];
+        $formBG = $this->arrPost["formBG"];
+        $formBorderWidth = $this->arrPost["formBorderWidth"];
+        $formFrameColor = $this->arrPost["formFrameColor"];
+        $fontSize = $this->arrPost["fontSize"];
+        $fontColor = $this->arrPost["fontColor"];
+        $fieldWidth = $this->arrPost["fieldWidth"];            
+        $fieldBG = $this->arrPost["fieldBG"];
+        $fieldBorderWidth = $this->arrPost["fieldBorderWidth"];
+        $fieldFrameColor = $this->arrPost["fieldFrameColor"];
+        $fieldFormSize = $this->arrPost["fieldFormSize"];
+        $fieldFormColor = $this->arrPost["fieldFormColor"];            
+        $cssInput = $this->arrPost["cssInput"];
+        try {
+		    // set the PDO error mode to exception
+		    $sql = "UPDATE $this->generalTable SET RTL='rtl', LOP='landscape', buttonFont='Arial', buttonFontColor='white', buttonColor='#9ACA26', formWidth='625px', formBG='#FC464A', formBorderWidth='10px', formFrameColor='#000000', fontSize='15px', fontColor='#000000', fieldWidth=:'230px', fieldBG='#F7F7F7', fieldBorderWidth='1px', fieldFrameColor='#FC464A', fieldFormSize='15px', fieldFormColor='#FC464A', cssInput='' WHERE intid=:intid";
+		    // Prepare statement
+		    $stmt = $this->conn->prepare($sql);
+		    // execute the query
+		    $stmt->execute();
+		    }
+		catch(PDOException $e)
+		    {
+		    echo $sql . "<br>" . $e->getMessage();
+		    }
+    } 
 	private function fieldChecker($mandatory, $hidden) {
 			$finalClasses = "";
 			if ($mandatory == 1)
@@ -507,11 +551,9 @@ class Action {
 
 /*MAIN*/
 $mainForms = new Forms();
-$conn = $mainForms->before();
+$conn = $mainForms->Run('before');
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$mainForms->generateFormHTMLScript($conn, $intid);
-//$mainForms->addNewForm($conn);
-$mainForms->showAlllinks($conn, $intid);
-$conn = $mainForms->after();
+$mainForms->Run('generateFormHTMLScript');
+$mainForms->Run('after');
 
 ?>
