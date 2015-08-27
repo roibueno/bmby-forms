@@ -1,5 +1,4 @@
 <?php
-namespace Mbeat\Interfaces;
 
 class Forms { 
 
@@ -30,47 +29,47 @@ class Forms {
         //$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }	
     
-    public function Run($action, $args = null){
-	    if(method_exists($this, $action)){
-	      $data = $this->$action($args);
-	      switch($action){
-	        case 'test':
-	        case 'before':
-		    case 'after':
-	        case 'addNewForm':
-	        case 'showAllForms':
-	        case 'retrieveFormData':
-	        case 'updateFormScreen1':
-	        case 'updateFormScreen2':
-	        case 'updateFormScreen3':
-	        case 'updateFormScreen4':
-	        case 'updateFieldsValues':
-	        case 'generateFormJSScript':
-	        case 'generateFormHTMLScript':
-	        case 'fieldChecker':
-	        case 'insertHTMLCodeToDB':
-	        case 'insertJSCodeToDB':
-	        case 'resetStyleButton':
-	        case 'addNewRefLink':
-	        case 'showAlllinks':
-	        /*case 'delete':
-	        case 'UploadFile':
-	        case 'GetFilterCount':
-	        case 'SendOnlyToProjectUsers': 
-	        case 'AllowSendSms':*/
-	          return $data;
-	          break;
-	      }
-	    }
+  public function Run($action, $args = null){
+    if(method_exists($this, $action)){
+      $data = $this->$action($args);
+      switch($action){
+        case 'test':
+        case 'before':
+	    case 'after':
+        case 'addNewForm':
+        case 'showAllForms':
+        case 'retrieveFormData':
+        case 'updateFormScreen1':
+        case 'updateFormScreen2':
+        case 'updateFormScreen3':
+        case 'updateFormScreen4':
+        case 'updateFieldsValues':
+        case 'generateFormJSScript':
+        case 'generateFormHTMLScript':
+        case 'fieldChecker':
+        case 'insertHTMLCodeToDB':
+        case 'insertJSCodeToDB':
+        case 'resetStyleButton':
+        case 'addNewRefLink':
+        case 'showAlllinks':
+        /*case 'delete':
+        case 'UploadFile':
+        case 'GetFilterCount':
+        case 'SendOnlyToProjectUsers': 
+        case 'AllowSendSms':*/
+          return $data;
+          break;
+      }
+    }
   }
   
-    private function before() {
-       $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+    function before() {
+        return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
  
     }
 
-	private function after() {
-		return $this->conn = null;
+	function after() {
+		return $conn = null;
 	}
 
 	/*External DB Functions*/
@@ -292,8 +291,8 @@ class Forms {
 				}";
 
     }	
-	private function generateFormHTMLScript(){
-		$intid = $this->arrPost["intid"];
+	function generateFormHTMLScript($conn, $intid){
+		//$intid = $this->arrPost["intid"];
         try {
 		    $stmt = $conn->prepare("SELECT intid, fieldType, fieldLabel, fieldname, optionalVals, isMandatory, isHidden, validOptions, dateUpdate, userUpdate FROM $this->fieldsTable WHERE intid=$intid");
 		    $stmt->execute();
@@ -563,11 +562,11 @@ class Forms {
 
 
 /*MAIN*/
-/* $mainObj = new Forms();
+$mainObj = new Forms();
 $conn = $mainObj->before();
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $mainObj->generateFormHTMLScript($conn, 1);
-$conn = $mainObj->after(); */
+$conn = $mainObj->after();
 
 ?>
 
