@@ -1,17 +1,27 @@
 <?php
 namespace Mbeat\Interfaces;
 
-class Action { 
+class Forms { 
 
 	/* Credentials */
+	public $generalTable = "mbeat_form";
+	public $fieldsTable = "mbeat_form_fields";
+	public $refsTable = "mbeat_refs_fields";
+	public $usersTable = "mbeat_users";
+	private $arrPost;
+	private $conn;
+	
+	/* 
 	public $servername = "tigris";
 	public $username = "bmbyforms";
 	public $password = "bmbyforms";
-	public $dbname = "bmbyforms";
-	public $generalTable = "mbeat_form";
-	public $fieldsTable = "mbeat_form_fields";
-    private $arrPost;
-    private $conn;
+	public $dbname = "bmbyforms"; 
+	*/
+	
+	public $servername = "localhost";
+	public $username = "root";
+	public $password = "";
+	public $dbname = "bmby";
 	
 	/*Structure Functions*/
 	function __construct($arrPost = null ){ 
@@ -285,129 +295,129 @@ class Action {
 	private function generateFormHTMLScript(){
 		$intid = $this->arrPost["intid"];
         try {
-		    $stmt = $this->conn->prepare("SELECT intid, fieldType, fieldLabel, fieldname, optionalVals, isMandatory, isHidden, validOptions, dateUpdate, userUpdate FROM $this->fieldsTable WHERE intid=$intid");
+		    $stmt = $conn->prepare("SELECT intid, fieldType, fieldLabel, fieldname, optionalVals, isMandatory, isHidden, validOptions, dateUpdate, userUpdate FROM $this->fieldsTable WHERE intid=$intid");
 		    $stmt->execute();
 			$allVals = "";
 			/*Special Values*/
 			//greetingsAddress
-			$greetingsAddress = $this->conn->prepare("SELECT greetingsUrl FROM $this->generalTable WHERE intid=$intid");
+			$greetingsAddress = $conn->prepare("SELECT greetingsUrl FROM $this->generalTable WHERE intid=$intid");
 			$greetingsAddress->execute();
 			$gAddCol = $greetingsAddress->fetchColumn();
 			//CSS Code
-			$cssCode = $this->conn->prepare("SELECT cssInput FROM $this->generalTable WHERE intid=$intid");
+			$cssCode = $conn->prepare("SELECT cssInput FROM $this->generalTable WHERE intid=$intid");
 			$cssCode->execute();
 			$cssToInject = $cssCode->fetchColumn();
 			//Button Text
-			$bText = $this->conn->prepare("SELECT buttonText FROM $this->generalTable WHERE intid=$intid");
+			$bText = $conn->prepare("SELECT buttonText FROM $this->generalTable WHERE intid=$intid");
 			$bText->execute();
 			$bt = $bText->fetchColumn();
 			//Condition Terms - Name
-			$ctn = $this->conn->prepare("SELECT nameOfCondTerms FROM $this->generalTable WHERE intid=$intid");
+			$ctn = $conn->prepare("SELECT nameOfCondTerms FROM $this->generalTable WHERE intid=$intid");
 			$ctn->execute();
 			$ctName = $ctn->fetchColumn();
 			//Condition Terms - Link
-			$ctl = $this->conn->prepare("SELECT linkToCondTerms FROM $this->generalTable WHERE intid=$intid");
+			$ctl = $conn->prepare("SELECT linkToCondTerms FROM $this->generalTable WHERE intid=$intid");
 			$ctl->execute();
 			$ctLink = $ctl->fetchColumn();
 			//Delivery Text
-			$dt = $this->conn->prepare("SELECT deliveryText FROM $this->generalTable WHERE intid=$intid");
+			$dt = $conn->prepare("SELECT deliveryText FROM $this->generalTable WHERE intid=$intid");
 			$dt->execute();
 			$dText = $dt->fetchColumn();
 			//RTL
-			$rtl = $this->conn->prepare("SELECT RTL FROM $this->generalTable WHERE intid=$intid");
+			$rtl = $conn->prepare("SELECT RTL FROM $this->generalTable WHERE intid=$intid");
 			$rtl->execute();
 			$formDirection = $rtl->fetchColumn();
-			if($formDirection == 'rtl')
+			if($formDirection == 'rtl' || $formDirection == 'RTL')
 				$formCSSCode = "body {direction: rtl !important;}";
 			else $formCSSCode = "body {direction: ltr !important;}";
 			//LOP
-			$lop = $this->conn->prepare("SELECT LOP FROM $this->generalTable WHERE intid=$intid");
+			$lop = $conn->prepare("SELECT LOP FROM $this->generalTable WHERE intid=$intid");
 			$lop->execute();
 			$orientation = $lop->fetchColumn();
-			if($orientation == 'land')
+			if($orientation == 'landscape' || $orientation == 'LANDSCAPE')
 				$formCSSCode .= "";//complete
 			else $formCSSCode .= "";//complete
 			//Button Font
-			$bf = $this->conn->prepare("SELECT buttonFont FROM $this->generalTable WHERE intid=$intid");
+			$bf = $conn->prepare("SELECT buttonFont FROM $this->generalTable WHERE intid=$intid");
 			$bf->execute();
 			$bFont = $bf->fetchColumn();
 			$formCSSCode .= ".button {font-family: ".$bFont." !important;}";
 			//Button Font Color
-			$bfc = $this->conn->prepare("SELECT buttonFontColor FROM $this->generalTable WHERE intid=$intid");
+			$bfc = $conn->prepare("SELECT buttonFontColor FROM $this->generalTable WHERE intid=$intid");
 			$bfc->execute();
 			$bFontColor = $bfc->fetchColumn();
-			if($bFontColor == 'trans')
+			if($bFontColor == 'transparent' || $bFontColor == 'TRANSPARENT')
 				$formCSSCode .= ".button {color: transparent !important;}";
 			else	
-				$formCSSCode .= ".button {color: red !important;}";
+				$formCSSCode .= ".button {color: ".$bFontColor." !important;}";
 			//Button BG Color
-			$bbg = $this->conn->prepare("SELECT buttonColor FROM $this->generalTable WHERE intid=$intid");
+			$bbg = $conn->prepare("SELECT buttonColor FROM $this->generalTable WHERE intid=$intid");
 			$bbg->execute();
 			$buttonBgColor = $bbg->fetchColumn();
-			if($buttonBgColor == 'trans')
+			if($buttonBgColor == 'transparent' || $buttonBgColor == 'TRANSPARENT')
 				$formCSSCode .= ".button {background: transparent !important;}";
 			else
-				$formCSSCode .= ".button {background: green !important;}";
+				$formCSSCode .= ".button {background: ".$buttonBgColor." !important;}";
 			//Form Width
-			$fw = $this->conn->prepare("SELECT formWidth FROM $this->generalTable WHERE intid=$intid");
+			$fw = $conn->prepare("SELECT formWidth FROM $this->generalTable WHERE intid=$intid");
 			$fw->execute();
 			$fWidth = $fw->fetchColumn();
 			$formCSSCode .= ".centerred {max-width: ".$fWidth."px !important;}";
 			//Form Width
-			$fbg = $this->conn->prepare("SELECT formBG FROM $this->generalTable WHERE intid=$intid");
+			$fbg = $conn->prepare("SELECT formBG FROM $this->generalTable WHERE intid=$intid");
 			$fbg->execute();
 			$fBackground = $fbg->fetchColumn();
 			$formCSSCode .= ".centerred {background: ".$fBackground." !important;}";
 			//Form Border Width
-			$fbw = $this->conn->prepare("SELECT formBorderWidth FROM $this->generalTable WHERE intid=$intid");
+			$fbw = $conn->prepare("SELECT formBorderWidth FROM $this->generalTable WHERE intid=$intid");
 			$fbw->execute();
 			$fBorderWidth = $fbw->fetchColumn();
 			$formCSSCode .= ".centerred {border-width: ".$fBorderWidth."px !important; border-style: solid;}";
 			//Form Frame Color
-			$ffc = $this->conn->prepare("SELECT formFrameColor FROM $this->generalTable WHERE intid=$intid");
+			$ffc = $conn->prepare("SELECT formFrameColor FROM $this->generalTable WHERE intid=$intid");
 			$ffc->execute();
 			$fFrameColor = $ffc->fetchColumn();
 			$formCSSCode .= ".centerred {border-color: ".$fFrameColor." !important;}";
 			//Font Size
-			$fs = $this->conn->prepare("SELECT fontSize FROM $this->generalTable WHERE intid=$intid");
+			$fs = $conn->prepare("SELECT fontSize FROM $this->generalTable WHERE intid=$intid");
 			$fs->execute();
 			$fontSize = $fs->fetchColumn();
 			$formCSSCode .= ".centerred {font-size: ".$fontSize."px !important;}";
 			//Font Color
-			$fc = $this->conn->prepare("SELECT fontColor FROM $this->generalTable WHERE intid=$intid");
+			$fc = $conn->prepare("SELECT fontColor FROM $this->generalTable WHERE intid=$intid");
 			$fc->execute();
 			$fontColor = $fc->fetchColumn();
-			$formCSSCode .= ".centerred {color: ".$fontSize." !important;}";
+			$formCSSCode .= ".centerred {color: ".$fontColor." !important;}";
 			//Field Width
-			$fieldW = $this->conn->prepare("SELECT fieldWidth FROM $this->generalTable WHERE intid=$intid");
+			$fieldW = $conn->prepare("SELECT fieldWidth FROM $this->generalTable WHERE intid=$intid");
 			$fieldW->execute();
 			$fieldWidth = $fieldW->fetchColumn();
-			$formCSSCode .= ".input {max-width: ".$fieldWidth."px !important;}";
+			$formCSSCode .= ".textarea {width: ".$fieldWidth."px !important;}.input {width: ".$fieldWidth."px !important;}.radio {width: ".$fieldWidth."px !important;}.checkbox {width: ".$fieldWidth."px !important;}.dropdown {width: ".$fieldWidth."px !important;}.input {width: ".$fieldWidth."px !important;}";
 			//Field BG
-			$fieldBG = $this->conn->prepare("SELECT fieldBG FROM $this->generalTable WHERE intid=$intid");
+			$fieldBG = $conn->prepare("SELECT fieldBG FROM $this->generalTable WHERE intid=$intid");
 			$fieldBG->execute();
 			$fieldBackground = $fieldBG->fetchColumn();
-			$formCSSCode .= ".input {background: ".$fieldBackground." !important;}";
+			$formCSSCode .= ".textarea {background: ".$fieldBackground." !important;}.input {background: ".$fieldBackground." !important;}.radio {background: ".$fieldBackground." !important;}.checkbox {background: ".$fieldBackground." !important;}.dropdown {background: ".$fieldBackground." !important;}";
 			//Field Border Width
-			$fieldBW = $this->conn->prepare("SELECT fieldBorderWidth FROM $this->generalTable WHERE intid=$intid");
+			$fieldBW = $conn->prepare("SELECT fieldBorderWidth FROM $this->generalTable WHERE intid=$intid");
 			$fieldBW->execute();
 			$fieldBWidth = $fieldBW->fetchColumn();
-			$formCSSCode .= ".input {max-width: ".$fieldBWidth."px !important;}";
+			$formCSSCode .= ".textarea {border-width: ".$fieldBWidth."px !important;}.input {border-width: ".$fieldBWidth."px !important;}.radio {border-width: ".$fieldBWidth."px !important;}.checkbox {border-width: ".$fieldBWidth."px !important;}.dropdown {border-width: ".$fieldBWidth."px !important;}";
 			//Field Frame Color
-			$fieldFC = $this->conn->prepare("SELECT fieldFrameColor FROM $this->generalTable WHERE intid=$intid");
+			$fieldFC = $conn->prepare("SELECT fieldFrameColor FROM $this->generalTable WHERE intid=$intid");
 			$fieldFC->execute();
 			$fieldFColor = $fieldFC->fetchColumn();
-			$formCSSCode .= ".input {border-color: ".$fieldFColor." !important; border-style: solid;}";
+			$formCSSCode .= ".textarea {border-color: ".$fieldFColor." !important; border-style: solid;}.input {border-color: ".$fieldFColor." !important; border-style: solid;}.radio {border-color: ".$fieldFColor." !important; border-style: solid;}.checkbox {border-color: ".$fieldFColor." !important; border-style: solid;}.dropdown {border-color: ".$fieldFColor." !important; border-style: solid;}";
 			//Field Form Size
-			$fieldFS = $this->conn->prepare("SELECT fieldFormSize FROM $this->generalTable WHERE intid=$intid");
+			$fieldFS = $conn->prepare("SELECT fieldFormSize FROM $this->generalTable WHERE intid=$intid");
 			$fieldFS->execute();
 			$fieldFSize = $fieldFS->fetchColumn();
-			$formCSSCode .= ".input {max-width: ".$fieldFSize."px !important;}";
+			$formCSSCode .= ".textarea {font-size: ".$fieldFSize."px !important;}.input {font-size: ".$fieldFSize."px !important;}.radio {font-size: ".$fieldFSize."px !important;}.checkbox {font-size: ".$fieldFSize."px !important;}.dropdown {font-size: ".$fieldFSize."px !important;}";
 			//Field Form Color
-			$fieldFCol = $this->conn->prepare("SELECT fieldFormColor FROM $this->generalTable WHERE intid=$intid");
+			$fieldFCol = $conn->prepare("SELECT fieldFormColor FROM $this->generalTable WHERE intid=$intid");
 			$fieldFCol->execute();
 			$fieldFColor = $fieldFCol->fetchColumn();
-			$formCSSCode .= ".input {color: ".$fieldFColor." !important;}";
+			$formCSSCode .= ".textarea {color: ".$fieldFColor." !important;}.input {color: ".$fieldFColor." !important;}.radio {color: ".$fieldFColor." !important;}.checkbox {color: ".$fieldFColor." !important;}.dropdown {color: ".$fieldFColor." !important;}";
 			//Apply CSS on Form
 			echo "<style>".$formCSSCode."</style>";
 		    // set the resulting array to associative
@@ -502,7 +512,7 @@ class Action {
             echo $sql . "<br>" . $e->getMessage();
         }
     }
-
+    //Reset Button - Server-Side functionality
     private function resetStyleButton() {
         $RTL = $this->arrPost["RTL"];
         $LOP = $this->arrPost["LOP"];
@@ -535,7 +545,6 @@ class Action {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     } 
-
 	/*Validation Functions*/
 	private function fieldChecker() {
         $intid = $this->arrPost["intid"];
