@@ -30,42 +30,42 @@ class Forms {
         //$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }	
     
-  public function Run($action, $args = null){
-    if(method_exists($this, $action)){
-      $data = $this->$action($args);
-      switch($action){
-        case 'test':
-        case 'before':
-	    case 'after':
-        case 'addNewForm':
-        case 'showAllForms':
-        case 'retrieveFormData':
-        case 'updateFormScreen1':
-        case 'updateFormScreen2':
-        case 'updateFormScreen3':
-        case 'updateFormScreen4':
-        case 'updateFieldsValues':
-        case 'generateFormJSScript':
-        case 'generateFormHTMLScript':
-        case 'fieldChecker':
-        case 'insertHTMLCodeToDB':
-        case 'insertJSCodeToDB':
-        case 'resetStyleButton':
-        case 'addNewRefLink':
-        case 'showAlllinks':
-        /*case 'delete':
-        case 'UploadFile':
-        case 'GetFilterCount':
-        case 'SendOnlyToProjectUsers': 
-        case 'AllowSendSms':*/
-          return $data;
-          break;
-      }
-    }
+    public function Run($action, $args = null){
+	    if(method_exists($this, $action)){
+	      $data = $this->$action($args);
+	      switch($action){
+	        case 'test':
+	        case 'before':
+		    case 'after':
+	        case 'addNewForm':
+	        case 'showAllForms':
+	        case 'retrieveFormData':
+	        case 'updateFormScreen1':
+	        case 'updateFormScreen2':
+	        case 'updateFormScreen3':
+	        case 'updateFormScreen4':
+	        case 'updateFieldsValues':
+	        case 'generateFormJSScript':
+	        case 'generateFormHTMLScript':
+	        case 'fieldChecker':
+	        case 'insertHTMLCodeToDB':
+	        case 'insertJSCodeToDB':
+	        case 'resetStyleButton':
+	        case 'addNewRefLink':
+	        case 'showAlllinks':
+	        /*case 'delete':
+	        case 'UploadFile':
+	        case 'GetFilterCount':
+	        case 'SendOnlyToProjectUsers': 
+	        case 'AllowSendSms':*/
+	          return $data;
+	          break;
+	      }
+	    }
   }
   
     private function before() {
-        $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+       $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
  
     }
 
@@ -422,7 +422,7 @@ class Forms {
 			echo "<style>".$formCSSCode."</style>";
 		    // set the resulting array to associative
 		    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); 
-		    echo '<form action="'.$gAddCol.'" method="post" class="STYLE-NAME"><div class="centerred elegant-aero"><h1>טופס לדוגמא<span>אנא הזן את פרטיך:</span></h1>';
+		    echo '<form action="'.$gAddCol.'" method="post" class="STYLE-NAME"><div class="centerred default-theme"><h1>טופס לדוגמא<span>אנא הזן את פרטיך:</span></h1>';
 		    foreach(new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v) {
 		    		$optValsStr = $v["optionalVals"];
 		    		$optArray = explode('|', $optValsStr);
@@ -471,7 +471,7 @@ class Forms {
 		    echo "Error: " . $e->getMessage();
 		}
 		echo '<br><br><label><span>&nbsp;</span><input type="submit" class="button" value="'.$bt.'" /></label>';
-		echo '<br><br><a href="www.google.co.il">'.$ctName.'</a>';
+		echo '<br><br><a href="'.$ctLink.'">'.$ctName.'</a>';
 		echo '<br><br><label><span>&nbsp;</span>'.$dText.'</label>';
 		echo '</div></form>';
 		}	
@@ -545,6 +545,7 @@ class Forms {
 		    echo $sql . "<br>" . $e->getMessage();
 		    }
     } 
+
 	/*Validation Functions*/
 	private function fieldChecker() {
         $intid = $this->arrPost["intid"];
@@ -562,10 +563,110 @@ class Forms {
 
 
 /*MAIN*/
-//$mainAction = new Action();
-//$this->conn = $mainAction->before();
-//$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-////$mainAction->generateFormHTMLScript($this->conn, $intid);
-//$this->conn = $mainAction->after();
+/* $mainObj = new Forms();
+$conn = $mainObj->before();
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$mainObj->generateFormHTMLScript($conn, 1);
+$conn = $mainObj->after(); */
 
 ?>
+
+<!-- Default Theme - CSS for Form -->
+<style>
+.hidden{
+	display: none !important;
+}
+.mandatory{
+	box-shadow: 4px 4px 20px rgba(200, 0, 0, 0.85);
+	padding: 10px;
+}
+.mandatory:focus {
+	border: 1px solid red;
+	outline: none;
+}
+.mandatory:hover {
+	opacity: 1;
+}
+.default-theme {
+	margin-left:auto;
+	margin-right:auto;
+	max-width: 500px;
+	background: #D2E9FF;
+	padding: 20px 20px 20px 20px;
+	font: 12px Arial, Helvetica, sans-serif;
+	color: #666;
+}
+.default-theme h1 {
+	font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	padding: 10px 10px 10px 20px;
+	display: block;
+	background: #C0E1FF;
+	border-bottom: 1px solid #B8DDFF;
+	margin: -20px -20px 15px;
+}
+.default-theme h1>span {
+	display: block;
+	font-size: 11px;
+}
+
+.default-theme label>span {
+	float: left;
+	margin-top: 10px;
+	color: #5E5E5E;
+}
+.default-theme label {
+	display: block;
+	margin: 0px 0px 5px;
+}
+.default-theme label>span {
+	float: left;
+	width: 20%;
+	text-align: right;
+	padding-right: 15px;
+	margin-top: 10px;
+	font-weight: bold;
+}
+.default-theme input[type="text"], .default-theme input[type="email"], .default-theme textarea, .default-theme select {
+	color: #888;
+	width: 70%;
+	padding: 0px 0px 0px 5px;
+	border: 1px solid #C5E2FF;
+	background: #FBFBFB;
+	outline: 0;
+	-webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+	box-shadow: inset 0px 1px 6px #ECF3F5;
+	font: 200 12px/25px Arial, Helvetica, sans-serif;
+	height: 30px;
+	line-height:15px;
+	margin: 2px 6px 16px 0px;
+}
+.default-theme textarea{
+	height:100px;
+	padding: 5px 0px 0px 5px;
+	width: 70%;
+}
+.default-theme select {
+	background: #fbfbfb url('down-arrow.png') no-repeat right;
+	background: #fbfbfb url('down-arrow.png') no-repeat right;
+	appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance: none;
+	text-indent: 0.01px;
+	text-overflow: '';
+	width: 70%;
+}
+.default-theme .button{
+	padding: 10px 30px 10px 30px;
+	background: #66C1E4;
+	border: none;
+	color: #FFF;
+	box-shadow: 1px 1px 1px #4C6E91;
+	-webkit-box-shadow: 1px 1px 1px #4C6E91;
+	-moz-box-shadow: 1px 1px 1px #4C6E91;
+	text-shadow: 1px 1px 1px #5079A3;
+
+}
+.default-theme .button:hover{
+	background: #3EB1DD;
+}
+</style>
