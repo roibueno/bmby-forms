@@ -1,0 +1,121 @@
+
+<HTML>
+<HEAD>
+<TITLE>Your Title Here</TITLE>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+<script type="application/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script>
+/*OS*/
+function detectOS(){
+	var OSName="unknown OS";
+	if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+	if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+	if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+	if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+	alert(OSName);
+}
+
+/*Browser*/
+navigator.sayswho= (function(){
+    var ua= navigator.userAgent, tem, 
+    M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if(/trident/i.test(M[1])){
+        tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+        return 'IE '+(tem[1] || '');
+    }
+    if(M[1]=== 'Chrome'){
+        tem= ua.match(/\bOPR\/(\d+)/);
+        if(tem!= null) return 'Opera '+tem[1];
+    }
+    M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+    return M.join(' ');
+})();
+/*Mobile or Desktop*/
+function detectmobile() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    alert("mobile");
+  }
+ else {
+    alert("desktop");
+  }
+}
+/*IP*/
+function myIP() {
+    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+    else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+    xmlhttp.open("GET","http://api.hostip.info/get_html.php",false);
+    xmlhttp.send();
+
+    hostipInfo = xmlhttp.responseText.split("\n");
+
+    for (i=0; hostipInfo.length >= i; i++) {
+        ipAddress = hostipInfo[i].split(":");
+        if ( ipAddress[0] == "IP" ) alert(ipAddress[1]);
+    }
+    return false;
+}
+	
+/*Referrer*/
+function getReferrer() {
+    var referrer = document.referrer;
+	alert(referrer);
+}
+
+/*Host*/
+function getReferrerDomain() {
+    var url = document.createElement('a');
+    url.href = document.referrer;
+    return url.hostname;
+}
+/*Country & City*/
+function geoTest() {
+ 
+    if (google.loader.ClientLocation) {
+         
+        var latitude = google.loader.ClientLocation.latitude;
+        var longitude = google.loader.ClientLocation.longitude;
+        var city = google.loader.ClientLocation.address.city;
+        var country = google.loader.ClientLocation.address.country;
+        var country_code = google.loader.ClientLocation.address.country_code;
+        var region = google.loader.ClientLocation.address.region;
+       
+        var text = 'Your Location<br /><br />Latitude: ' + latitude + '<br />Longitude: ' + longitude + '<br />City: ' + city + '<br />Country: ' + country + '<br />Country Code: ' + country_code + '<br />Region: ' + region;
+     
+    } else {
+         
+        var text = 'Google was not able to detect your location';
+     
+    }
+     
+    document.write(text);
+ 
+}
+</script>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<HR>
+<H1>Analytics Script</H1>
+
+
+<input type="button" id="btn1"  value="בדוק סוג מכשיר" onclick="detectmobile()">
+<input type="button" id="btn2"  value="IP" onclick="myIP()">
+<input type="button" id="btn3"  value="דפדפן" onclick="alert(navigator.sayswho)">
+<input type="button" id="btn4"  value="מערכת הפעלה" onclick="detectOS()">
+<input type="button" id="btn5"  value="הפנייה" onclick="getReferrer()">
+<input type="button" id="btn6"  value="דומיין" onclick="getReferrerDomain()">
+<input type="button" id="btn7"  value="מדינה ועיר" onclick="geoTest();">
+<HR>
+</BODY>
+</HTML>
